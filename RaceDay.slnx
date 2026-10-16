@@ -1,3 +1,9 @@
 <Solution>
+  <Folder Name="/.gitbhub/" />
+  <Folder Name="/.gitbhub/workflows/">
+    <File Path="build-and-test.yml" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/RaceDay.Tests/" />
   <Project Path="RaceDay/RaceDay.API.csproj" />
 </Solution>
