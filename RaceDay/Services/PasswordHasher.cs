@@ -1,4 +1,6 @@
-﻿namespace RaceDay.API.Services
+﻿using BCrypt.Net;
+
+namespace RaceDay.API.Services
 {
     public  static class PasswordHasher
     {
