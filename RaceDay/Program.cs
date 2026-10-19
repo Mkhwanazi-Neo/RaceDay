@@ -2,10 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // 1. Add DbContext
 builder.Services.AddDbContext<RaceDayDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Data Source=localhost\\SQLEXPRESS01;Initial Catalog=master;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Command Timeout=0")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 2. Add Session Services
 builder.Services.AddDistributedMemoryCache();
