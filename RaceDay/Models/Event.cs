@@ -8,6 +8,7 @@
         public DateTime EventDate { get; set; }
         public string Location { get; set; } = string.Empty;
         public string? RouteInfo { get; set; }
+        public string? BannerImageUrl { get; set; } // Added for Azure Blob Storage
 
         public Organiser? Organiser { get; set; }
         public ICollection<Category> Categories { get; set; } = new List<Category>();

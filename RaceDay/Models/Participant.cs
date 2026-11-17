@@ -8,6 +8,7 @@
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty; // Hashed password requirement
         public string? Gender { get; set; }
+        public string? ProfilePictureUrl { get; set; } // Added for Azure Blob Storage
         public DateTime DateOfBirth { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
