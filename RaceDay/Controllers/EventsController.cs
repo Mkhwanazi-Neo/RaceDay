@@ -5,6 +5,7 @@ using RaceDay.API.Attributes;
 using RaceDay.API.Data;
 using RaceDay.API.DTOs;
 using RaceDay.API.Models;
+using RaceDay.API.Services;
 
 namespace RaceDay.API.Controllers
 {
@@ -83,6 +84,24 @@ namespace RaceDay.API.Controllers
             _context.Events.Remove(raceEvent);
             await _context.SaveChangesAsync();
             return Ok(new { message = "Event deleted successfully." });
+        }
+
+        [HttpPost("{id}/banner")]
+        [SessionAuthorize("Organiser")]
+        public async Task<IActionResult> UploadBanner(int id, IFormFile file, [FromServices] BlobStorageService blobService)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(new { message = "No image file provided." });
+
+            var raceEvent = await _context.Events.FindAsync(id);
+            if (raceEvent == null)
+                return NotFound(new { message = "Event not found." });
+
+            var imageUrl = await blobService.UploadFileAsync(file, "event-banners");
+            raceEvent.BannerImageUrl = imageUrl;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { bannerImageUrl = imageUrl });
         }
     }
 }

@@ -9,6 +9,7 @@
         public string Role { get; set; } = string.Empty;
         public string? Phone { get; set; }
         public string? Gender { get; set; }
+        public string? ProfilePictureUrl { get; set; } // Added for Azure Blob Storage
         public DateTime? DateOfBirth { get; set; }
     }
 

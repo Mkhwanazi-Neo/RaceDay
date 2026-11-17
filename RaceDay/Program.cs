@@ -40,6 +40,8 @@ builder.Services.AddSwaggerGen(c =>
     }
 });
 
+builder.Services.AddScoped<RaceDay.API.Services.BlobStorageService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
