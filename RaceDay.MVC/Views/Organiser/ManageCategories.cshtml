@@ -1,0 +1,69 @@
+﻿@model RaceDay.MVC.Models.CategoryViewModel
+@{
+    var ev = ViewBag.Event as RaceDay.MVC.Models.EventViewModel;
+    ViewData["Title"] = "Manage Categories";
+}
+
+<h3 class="fw-bold mb-3">Categories for @ev?.EventName</h3>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card p-4 mb-4">
+            <h5 class="fw-bold mb-3">Add New Category</h5>
+            <form asp-action="AddCategory" method="post">
+                <input type="hidden" asp-for="EventId" />
+                <div class="mb-3">
+                    <label asp-for="CategoryName" class="form-label">Category Name (e.g. Senior 21km)</label>
+                    <input asp-for="CategoryName" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Discipline" class="form-label">Discipline</label>
+                    <select asp-for="Discipline" class="form-select">
+                        <option value="Running">Running</option>
+                        <option value="Walking">Walking</option>
+                        <option value="Cycling">Cycling</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="DistanceKm" class="form-label">Distance (km)</label>
+                    <input asp-for="DistanceKm" type="number" step="0.1" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="EntryFee" class="form-label">Entry Fee (ZAR)</label>
+                    <input asp-for="EntryFee" type="number" step="0.01" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-raceday w-100">Add Category</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-3">Active Categories</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Discipline</th>
+                        <th>Distance</th>
+                        <th>Fee</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ev != null)
+                    {
+                        foreach (var cat in ev.Categories)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@cat.CategoryName</td>
+                                <td>@cat.Discipline</td>
+                                <td>@cat.DistanceKm km</td>
+                                <td>R @cat.EntryFee.ToString("F2")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

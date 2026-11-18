@@ -1,0 +1,139 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var userRole = HttpContextAccessor.HttpContext?.Session.GetString("UserRole");
+    var userName = HttpContextAccessor.HttpContext?.Session.GetString("UserName");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RaceDay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+            :root {
+                --rd-navy: #0F172A;
+                --rd-orange: #F97316;
+                --rd-orange-hover: #EA580C;
+                --rd-bg: #F8FAFC;
+            }
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: var(--rd-bg);
+                color: #1E293B;
+            }
+            .navbar-raceday {
+                background-color: var(--rd-navy);
+                border-bottom: 3px solid var(--rd-orange);
+            }
+            .navbar-brand {
+                font-weight: 800;
+                letter-spacing: -0.5px;
+                color: #FFFFFF !important;
+            }
+            .navbar-brand span {
+                color: var(--rd-orange);
+            }
+            .nav-link {
+                color: #E2E8F0 !important;
+                font-weight: 600;
+                margin-right: 0.5rem;
+            }
+            .nav-link:hover {
+                color: var(--rd-orange) !important;
+            }
+            .btn-raceday {
+                background-color: var(--rd-orange);
+                color: #FFFFFF;
+                font-weight: 600;
+                border: none;
+            }
+            .btn-raceday:hover {
+                background-color: var(--rd-orange-hover);
+                color: #FFFFFF;
+            }
+            .card {
+                border: none;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+            }
+            .badge-confirmed {
+                background-color: #16A34A;
+                color: white;
+            }
+            .badge-pending {
+                background-color: #F59E0B;
+                color: #0F172A;
+            }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-raceday py-3">
+            <div class="container">
+                <a class="navbar-brand fs-4" href="#">RACE<span>DAY</span></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        @if (userRole == "Organiser")
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Organiser" asp-action="Dashboard">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Organiser" asp-action="CreateEvent">Create Event</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Organiser" asp-action="Enrolments">Enrolments</a></li>
+                        }
+                        else if (userRole == "Participant")
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Participant" asp-action="Index">Upcoming Events</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Participant" asp-action="MyResults">My Results</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Participant" asp-action="Profile">My Profile</a></li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        @if (!string.IsNullOrEmpty(userRole))
+                        {
+                            <li class="nav-item me-3">
+                                <span class="text-light small">Welcome, <strong>@userName</strong> (@userRole)</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light btn-sm" asp-controller="Auth" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a></li>
+                            <li class="nav-item"><a class="btn btn-raceday btn-sm ms-2" asp-controller="Auth" asp-action="Register">Register</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container my-4">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,35 @@
+﻿@model List<RaceDay.MVC.Models.EnrolmentViewModel>
+@{ ViewData["Title"] = "Event Enrolments"; }
+
+<h3 class="fw-bold mb-4">Participant Enrolments</h3>
+
+<div class="card p-4">
+    <table class="table align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Participant</th>
+                <th>Event</th>
+                <th>Category</th>
+                <th>Enrolment Date</th>
+                <th>Status</th>
+                <th class="text-end">Results</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var badgeClass = item.PaymentStatus == "Completed" ? "badge-confirmed" : "badge-pending";
+                <tr>
+                    <td class="fw-bold">@item.ParticipantName</td>
+                    <td>@item.EventName</td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.RegistrationDate.ToString("dd MMM yyyy")</td>
+                    <td><span class="badge @badgeClass">@item.PaymentStatus</span></td>
+                    <td class="text-end">
+                        <a asp-action="CaptureResult" asp-route-enrolmentId="@item.EnrolmentId" class="btn btn-sm btn-raceday">Capture Result</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

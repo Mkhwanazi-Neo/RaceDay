@@ -1,0 +1,59 @@
+﻿@model RaceDay.MVC.Models.OrganiserDashboardViewModel
+@{ ViewData["Title"] = "Organiser Dashboard"; }
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Organiser Dashboard</h2>
+    <a asp-action="CreateEvent" class="btn btn-raceday">+ Create New Event</a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card p-4 border-start border-4 border-warning">
+            <span class="text-muted fw-semibold">Total Events Created</span>
+            <h2 class="fw-bold mb-0">@Model.TotalEvents</h2>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-4 border-start border-4 border-success">
+            <span class="text-muted fw-semibold">Total Participant Enrolments</span>
+            <h2 class="fw-bold mb-0">@Model.TotalEnrolments</h2>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4">
+    <h5 class="fw-bold mb-3">Your Managed Events</h5>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Event Name</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Enrolments</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ev in Model.Events)
+                {
+                    var count = Model.Enrolments.Count(e => e.EventId == ev.EventId);
+                    <tr>
+                        <td class="fw-bold">@ev.EventName</td>
+                        <td>@ev.EventDate.ToString("dd MMM yyyy")</td>
+                        <td>@ev.Location</td>
+                        <td><span class="badge bg-dark">@count athletes</span></td>
+                        <td class="text-end">
+                            <a asp-action="ManageCategories" asp-route-eventId="@ev.EventId" class="btn btn-sm btn-outline-primary">Categories</a>
+                            <a asp-action="Enrolments" asp-route-eventId="@ev.EventId" class="btn btn-sm btn-outline-success">Enrolments</a>
+                            <a asp-action="EditEvent" asp-route-id="@ev.EventId" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <form asp-action="DeleteEvent" asp-route-id="@ev.EventId" method="post" class="d-inline" onsubmit="return confirm('Delete this event?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
