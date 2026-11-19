@@ -38,13 +38,22 @@ namespace RaceDay.MVC.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var created = await _apiService.CreateEventAsync(model);
-            if (created == null)
+            try
             {
-                ViewBag.Error = "Could not create event.";
+                var created = await _apiService.CreateEventAsync(model);
+                if (created == null)
+                {
+                    ViewBag.Error = "Could not create event. Please ensure you are logged in as an Organiser and all fields are valid.";
+                    return View(model);
+                }
+                TempData["Success"] = "Event created successfully!";
+                return RedirectToAction("Dashboard");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = $"Error creating event: {ex.Message}";
                 return View(model);
             }
-            return RedirectToAction("Dashboard");
         }
 
         [HttpGet]

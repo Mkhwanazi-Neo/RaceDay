@@ -158,17 +158,28 @@ namespace RaceDay.MVC.Services
 
         public async Task UploadEventBannerAsync(int eventId, IFormFile file)
         {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            var fileBytes = memoryStream.ToArray();
+
             using var content = new MultipartFormDataContent();
-            using var stream = file.OpenReadStream();
-            var fileContent = new StreamContent(stream);
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+            var fileContent = new ByteArrayContent(fileBytes);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType ?? "image/jpeg");
             content.Add(fileContent, "file", file.FileName);
 
-            var request = new HttpRequestMessage(HttpMethod.Post, $"api/events/{eventId}/banner") { Content = content };
+            var request = new HttpRequestMessage(HttpMethod.Post, $"api/events/{eventId}/banner")
+            {
+                Content = content
+            };
             AttachApiSessionCookie(request);
-            await _httpClient.SendAsync(request);
-        }
 
+            var response = await _httpClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorBody = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Image upload failed ({response.StatusCode}): {errorBody}");
+            }
+        }
         public async Task<bool> AddCategoryAsync(int eventId, CategoryViewModel model)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, $"api/events/{eventId}/categories")
