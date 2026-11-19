@@ -1,0 +1,32 @@
+﻿@model List<RaceDay.MVC.Models.ResultViewModel>
+@{ ViewData["Title"] = "My Race Results"; }
+
+<h2 class="fw-bold mb-4">My Performance History</h2>
+
+<div class="card p-4">
+    <table class="table align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Event</th>
+                <th>Category</th>
+                <th>Race Number</th>
+                <th>Finish Time</th>
+                <th>Overall Standing</th>
+                <th>Category Pos</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var res in Model)
+            {
+                <tr>
+                    <td class="fw-bold">@res.EventName</td>
+                    <td>@res.CategoryName</td>
+                    <td><span class="badge bg-secondary">#@res.RaceNumber</span></td>
+                    <td class="fw-bold text-primary">@res.FinishTime</td>
+                    <td><strong>@res.PositionOverall</strong> out of <strong>@res.TotalFinishers</strong> finishers</td>
+                    <td>@res.PositionCategory</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
