@@ -15,6 +15,8 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 builder.Services.AddControllers();
@@ -41,6 +43,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddScoped<RaceDay.API.Services.BlobStorageService>();
+
+
 
 var app = builder.Build();
 
