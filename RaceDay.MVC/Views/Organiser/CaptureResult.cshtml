@@ -1,0 +1,32 @@
+﻿@model RaceDay.MVC.Models.ResultViewModel
+@{ ViewData["Title"] = "Capture Race Result"; }
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h4 class="fw-bold mb-3">Publish Participant Result</h4>
+            <form asp-action="CaptureResult" method="post">
+                <input type="hidden" asp-for="EnrolmentId" />
+                <div class="mb-3">
+                    <label asp-for="RaceNumber" class="form-label fw-semibold">Race Bib Number</label>
+                    <input asp-for="RaceNumber" type="number" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="FinishTime" class="form-label fw-semibold">Finish Time (HH:MM:SS)</label>
+                    <input asp-for="FinishTime" type="text" placeholder="01:45:30" class="form-control" required />
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PositionOverall" class="form-label fw-semibold">Overall Position</label>
+                        <input asp-for="PositionOverall" type="number" class="form-control" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PositionCategory" class="form-label fw-semibold">Category Position</label>
+                        <input asp-for="PositionCategory" type="number" class="form-control" required />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-raceday w-100">Publish Result</button>
+            </form>
+        </div>
+    </div>
+</div>
