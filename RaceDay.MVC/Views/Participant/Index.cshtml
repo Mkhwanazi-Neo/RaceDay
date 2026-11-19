@@ -1,0 +1,38 @@
+﻿@model List<RaceDay.MVC.Models.EventViewModel>
+@{ ViewData["Title"] = "Upcoming Events"; }
+
+<div class="card p-4 mb-4 bg-dark text-white">
+    <h2 class="fw-bold">Find Your Next Race</h2>
+    <p class="text-light mb-3">Browse upcoming road running, walking, and cycling events across South Africa</p>
+    <form method="get" class="row g-2">
+        <div class="col-md-5">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search event name..." />
+        </div>
+        <div class="col-md-5">
+            <input type="text" name="location" value="@ViewBag.Location" class="form-control" placeholder="Filter by city or venue..." />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-raceday w-100">Filter</button>
+        </div>
+    </form>
+</div>
+
+<div class="row">
+    @foreach (var ev in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 overflow-hidden">
+                @if (!string.IsNullOrEmpty(ev.BannerImageUrl))
+                {
+                    <img src="@ev.BannerImageUrl" class="card-img-top" style="height: 180px; object-fit: cover;" alt="@ev.EventName" />
+                }
+                <div class="card-body d-flex flex-column">
+                    <span class="badge bg-warning text-dark align-self-start mb-2">@ev.EventDate.ToString("dd MMM yyyy")</span>
+                    <h5 class="fw-bold">@ev.EventName</h5>
+                    <p class="text-muted small mb-3">@ev.Location</p>
+                    <a asp-action="EventDetails" asp-route-id="@ev.EventId" class="btn btn-raceday mt-auto">View Details & Enter</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
