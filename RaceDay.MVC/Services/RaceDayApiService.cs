@@ -180,15 +180,28 @@ namespace RaceDay.MVC.Services
                 throw new Exception($"Image upload failed ({response.StatusCode}): {errorBody}");
             }
         }
-        public async Task<bool> AddCategoryAsync(int eventId, CategoryViewModel model)
+        public async Task<(bool Success, string Error)> AddCategoryAsync(int eventId, CategoryViewModel model)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, $"api/events/{eventId}/categories")
+            var body = new
             {
-                Content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json")
+                EventId = eventId,
+                CategoryName = model.CategoryName,
+                Discipline = model.Discipline,
+                DistanceKm = model.DistanceKm,
+                EntryFee = model.EntryFee
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Post, $"api/events/{eventId}")
+            {
+                Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json")
             };
             AttachApiSessionCookie(request);
+
             var response = await _httpClient.SendAsync(request);
-            return response.IsSuccessStatusCode;
+            if (response.IsSuccessStatusCode) return (true, string.Empty);
+
+            var error = await response.Content.ReadAsStringAsync();
+            return (false, $"API Error ({response.StatusCode}): {error}");
         }
 
         // --- ENROLMENTS ---[cite: 17, 18]

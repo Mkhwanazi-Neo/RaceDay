@@ -90,9 +90,19 @@ namespace RaceDay.MVC.Controllers
         }
 
         [HttpPost]
+       
         public async Task<IActionResult> AddCategory(CategoryViewModel model)
         {
-            await _apiService.AddCategoryAsync(model.EventId, model);
+            var (success, error) = await _apiService.AddCategoryAsync(model.EventId, model);
+            if (!success)
+            {
+                TempData["Error"] = $"Could not add category: {error}";
+            }
+            else
+            {
+                TempData["Success"] = "Category added successfully!";
+            }
+
             return RedirectToAction("ManageCategories", new { eventId = model.EventId });
         }
 
