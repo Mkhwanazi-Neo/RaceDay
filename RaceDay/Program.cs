@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Data;
+using RaceDay.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // 1. Add DbContext
 builder.Services.AddDbContext<RaceDayDbContext>(options =>
@@ -19,11 +19,18 @@ builder.Services.AddSession(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
-builder.Services.AddControllers();
+// 3. Add Controllers & JSON Cycle Handling
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
-// 3. Add Swagger UI Support
+// 4. Register BlobStorageService
+builder.Services.AddScoped<BlobStorageService>();
+
+// 5. Add Swagger UI Support
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
@@ -32,34 +39,18 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "API powering the RaceDay event management system."
     });
-
-    // Enable XML comments documentation if enabled in project properties
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
-    if (System.IO.File.Exists(xmlPath))
-    {
-        c.IncludeXmlComments(xmlPath);
-    }
 });
-
-builder.Services.AddScoped<RaceDay.API.Services.BlobStorageService>();
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-    });
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(); 
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-app.UseSession(); // Enable Session Middleware
+app.UseSession();
 app.UseAuthorization();
 app.MapControllers();
 

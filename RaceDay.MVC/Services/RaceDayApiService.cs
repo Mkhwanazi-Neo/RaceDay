@@ -184,14 +184,13 @@ namespace RaceDay.MVC.Services
         {
             var body = new
             {
-                EventId = eventId,
                 CategoryName = model.CategoryName,
                 Discipline = model.Discipline,
                 DistanceKm = model.DistanceKm,
                 EntryFee = model.EntryFee
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Post, $"api/events/{eventId}")
+            var request = new HttpRequestMessage(HttpMethod.Post, $"api/categories?eventId={eventId}")
             {
                 Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json")
             };

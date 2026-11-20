@@ -92,7 +92,7 @@ namespace RaceDay.API.Controllers
 
         [HttpPost("profile/picture")]
         [SessionAuthorize("Participant")]
-        public async Task<IActionResult> UploadProfilePicture(IFormFile file, [FromServices] BlobStorageService blobService)
+        public async Task<IActionResult> UploadProfilePicture([FromForm] IFormFile file, [FromServices] BlobStorageService blobService)
         {
             if (file == null || file.Length == 0)
                 return BadRequest(new { message = "No image file provided." });
