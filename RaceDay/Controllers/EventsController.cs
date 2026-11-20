@@ -88,20 +88,28 @@ namespace RaceDay.API.Controllers
 
         [HttpPost("{id}/banner")]
         [SessionAuthorize("Organiser")]
-        public async Task<IActionResult> UploadBanner(int id, IFormFile file, [FromServices] BlobStorageService blobService)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadBanner(int id, [FromForm] IFormFile file, [FromServices] BlobStorageService blobService)
         {
-            if (file == null || file.Length == 0)
-                return BadRequest(new { message = "No image file provided." });
+            try
+            {
+                if (file == null || file.Length == 0)
+                    return BadRequest(new { message = "No image file provided." });
 
-            var raceEvent = await _context.Events.FindAsync(id);
-            if (raceEvent == null)
-                return NotFound(new { message = "Event not found." });
+                var raceEvent = await _context.Events.FindAsync(id);
+                if (raceEvent == null)
+                    return NotFound(new { message = "Event not found." });
 
-            var imageUrl = await blobService.UploadFileAsync(file, "event-banners");
-            raceEvent.BannerImageUrl = imageUrl;
-            await _context.SaveChangesAsync();
+                var imageUrl = await blobService.UploadFileAsync(file, "event-banners");
+                raceEvent.BannerImageUrl = imageUrl;
+                await _context.SaveChangesAsync();
 
-            return Ok(new { bannerImageUrl = imageUrl });
+                return Ok(new { bannerImageUrl = imageUrl });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Blob upload failed: {ex.Message}" });
+            }
         }
     }
 }

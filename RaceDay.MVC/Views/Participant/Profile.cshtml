@@ -1,0 +1,41 @@
+﻿@model RaceDay.MVC.Models.ProfileViewModel
+@{ ViewData["Title"] = "My Profile"; }
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card p-4">
+            <div class="d-flex align-items-center mb-4">
+                @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+                {
+                    <img src="@Model.ProfilePictureUrl" class="rounded-circle me-3" style="width: 80px; height: 80px; object-fit: cover;" />
+                }
+                <div>
+                    <h3 class="fw-bold mb-0">@Model.FirstName @Model.LastName</h3>
+                    <span class="badge bg-dark">@Model.Role</span>
+                </div>
+            </div>
+
+            <form asp-action="Profile" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FirstName" class="form-label fw-semibold">First Name</label>
+                        <input asp-for="FirstName" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="LastName" class="form-label fw-semibold">Last Name</label>
+                        <input asp-for="LastName" class="form-control" />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label fw-semibold">Email</label>
+                    <input asp-for="Email" class="form-control" />
+                </div>
+                <div class="mb-4">
+                    <label asp-for="ProfilePictureFile" class="form-label fw-semibold">Update Profile Picture</label>
+                    <input asp-for="ProfilePictureFile" type="file" accept="image/*" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-raceday px-4">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</div>

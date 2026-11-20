@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RaceDay.API.Attributes;
 using RaceDay.API.Data;
 using RaceDay.API.DTOs;
+using RaceDay.API.Services;
 
 namespace RaceDay.API.Controllers
 {
@@ -87,6 +88,25 @@ namespace RaceDay.API.Controllers
                 await _context.SaveChangesAsync();
                 return Ok(new { message = "Participant profile updated successfully." });
             }
+        }
+
+        [HttpPost("profile/picture")]
+        [SessionAuthorize("Participant")]
+        public async Task<IActionResult> UploadProfilePicture([FromForm] IFormFile file, [FromServices] BlobStorageService blobService)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(new { message = "No image file provided." });
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var participant = await _context.Participants.FindAsync(userId);
+            if (participant == null)
+                return NotFound(new { message = "Participant not found." });
+
+            var imageUrl = await blobService.UploadFileAsync(file, "profile-pictures");
+            participant.ProfilePictureUrl = imageUrl;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { profilePictureUrl = imageUrl });
         }
     }
 }

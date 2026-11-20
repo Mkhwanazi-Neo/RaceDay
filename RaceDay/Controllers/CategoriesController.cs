@@ -29,7 +29,7 @@ namespace RaceDay.API.Controllers
 
         [HttpPost]
         [SessionAuthorize("Organiser")]
-        public async Task<IActionResult> AddCategory(int eventId, [FromBody] CreateCategoryDto dto)
+        public async Task<IActionResult> AddCategory([FromQuery] int eventId, [FromBody] CreateCategoryDto dto)
         {
             var raceEvent = await _context.Events.FindAsync(eventId);
             if (raceEvent == null) return NotFound(new { message = "Event not found." });
